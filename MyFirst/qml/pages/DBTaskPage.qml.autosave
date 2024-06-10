@@ -69,11 +69,10 @@ Item {
     function initializeDatabase() {
         var db = LocalStorage.openDatabaseSync("notesDB", "1.0", "Notes
                 Database", 1000000)
-     db.transaction(function(tx) {
-     tx.executeSql('CREATE TABLE IF NOT EXISTS notes(note TEXT)')
-     console.log("Таблица создана")
-     })
-     }
-    
+    db.transaction(function(tx) {
+    tx.executeSql('CREATE TABLE IF NOT EXISTS notes(note TEXT)')
+        console.log("Таблица создана")
+    })
+    }
 }
 
