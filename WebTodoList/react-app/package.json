@@ -1,0 +1,51 @@
+{
+  "name": "react-app",
+  "version": "0.0.1",
+  "private": true,
+  "homepage": ".",
+  "dependencies": {
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@mui/icons-material": "^5.8.4",
+    "@mui/material": "^5.11.10",
+    "@mui/x-date-pickers": "^5.0.20",
+    "crypto-js": "^4.1.1",
+    "dayjs": "^1.11.7",
+    "formik": "^2.2.9",
+    "i18next": "^22.4.10",
+    "i18next-browser-languagedetector": "^7.0.1",
+    "i18next-http-backend": "^2.1.1",
+    "lottie-react": "^2.4.0",
+    "lz-string": "^1.4.4",
+    "prop-types": "^15.8.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-i18next": "^12.2.0",
+    "react-router-dom": "^6.8.0",
+    "react-scripts": "^3.0.1",
+    "yup": "^1.0.2"
+  },
+  "scripts": {
+    "start": "react-scripts --openssl-legacy-provider start",
+    "build": "BUILD_PATH='build' react-scripts --openssl-legacy-provider build",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

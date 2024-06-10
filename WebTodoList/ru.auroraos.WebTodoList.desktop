@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+X-Nemo-Application-Type=silica-qt5
+Icon=ru.auroraos.WebTodoList
+Exec=/usr/bin/ru.auroraos.WebTodoList
+Name=Web Todo List
+Name[ru]=Веб список заметок
+
+[X-Application]
+Permissions=WebView
+OrganizationName=ru.auroraos
+ApplicationName=WebTodoList
+ExecDBus=/usr/bin/ru.auroraos.WebTodoList

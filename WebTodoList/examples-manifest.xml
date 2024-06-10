@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- Generated file. This file is used by SDK to show example inside Welcome screen. It is not the part of the example. -->
+<instructionals module="Aurora OS Examples">
+ <examples>
+  <example imageUrl="C:/Users/abrik/AppData/Roaming/AuroraOS-SDK-5.1.0/QtCreator\Aurora OS Examples\WebTodoList\example-icon.png" name="Web Todo List" projectPath="ru.auroraos.WebTodoList.pro">
+   <description><![CDATA[An application that allows you to set tasks for a specific date.
+Edit tasks.
+View a list of tasks for today or a list of all tasks.]]></description>
+   <tags>Qt,пример</tags>
+   <platforms>Mer</platforms>
+   <preferredFeatures>Mer.Wizard.Feature.Emulator</preferredFeatures>
+   <fileToOpen>/qml/WebTodoList.qml</fileToOpen>
+  </example>
+ </examples>
+</instructionals>

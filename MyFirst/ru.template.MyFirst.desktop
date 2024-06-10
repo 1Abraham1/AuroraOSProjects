@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+X-Nemo-Application-Type=silica-qt5
+Icon=ru.template.MyFirst
+Exec=/usr/bin/ru.template.MyFirst
+Name=Template
+Name[ru]=Календарь
+
+[X-Application]
+Permissions=PushNotifications;DeviceInfo;UserDirs
+OrganizationName=ru.template
+ApplicationName=MyFirst
+ExecDBus=/usr/bin/ru.template.MyFirst

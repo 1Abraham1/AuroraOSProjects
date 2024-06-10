@@ -1,0 +1,36 @@
+# Android studio and IntelliJ
+.idea
+
+# System temp
+.DS_Store
+.sfdk
+
+# Aurora
+react-app/.vscode/launch.json
+*changes.in*
+*changes.run.in*
+.apptool
+.DS_Store
+.mb2
+.vscode
+CMakeCache.txt
+CMakeFiles
+Makefile
+QtCreatorDeployment.txt
+RPMS
+cmake_install.cmake
+install_manifest.txt
+*.autosave
+*.list
+*.md.backup
+*.moc
+*.o
+*.pro.user*
+*.qm
+*~
+*_autogen
+CMakeLists.txt.user*
+moc_*.cpp
+ru.auroraos.WebTodoList
+build
+
