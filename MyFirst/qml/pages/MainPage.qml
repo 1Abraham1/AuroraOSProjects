@@ -1,12 +1,115 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "../../qml/pages/func.js" as Func
+import QtQuick.LocalStorage 2.0
+//import "../pages/DBTaskPage.qml"
 
 Page {
     id: page
     backgroundColor: "#141414"
     objectName: "mainPage"
     allowedOrientations: Orientation.All
+    property var db
+    property var tasks
+    property string _table: "Tasks"
+//     DBTaskPage {
+//         id: main_db
+//     }
+    QtObject {
+        id: model
+        objectName: "TaskModel"
+
+        property int id: 0
+        property string date: ""
+        property string name: ""
+        property string desc: ""
+
+        function fromJson(json) {
+            try {
+                id = json['id'] === undefined ? 0 : parseInt(json['id']);
+                date = json['date'];
+                name = json['name'];
+                desc = json['desc'];
+            } catch (e) {
+                return false;
+            }
+            return true;
+        }
+
+        function copy() {
+            return {
+                "id": id,
+                "date": date,
+                "name": name,
+                "desc": desc
+            };
+        }
+    }
+
+
+    property var noteModel: ListModel {
+//        ListElement {  }
+//        ListElement {  }
+    }
+
+    function selectRows() {
+        db.transaction(function (tx) {
+                var rs = tx.executeSql("SELECT rowid, * FROM " + _table);
+                var data = [];
+                for (var i = 0; i < rs.rows.length; i++) {
+                    model.id = rs.rows.item(i).rowid;
+                    model.date = rs.rows.item(i).date;
+                    model.name = rs.rows.item(i).name;
+                    model.desc = rs.rows.item(i).desc;
+                    data.push(model.copy());
+                    console.log("SELECT: " + model.name)
+                }
+                if (data) {
+                    tasks = data
+                }
+
+            });
+    }
+    function checkDate(d, m, y) {
+        var ddate = Func.get_correct_date(d, m, y)
+        var f = false
+        db.transaction(function (tx) {
+                var rs = tx.executeSql("SELECT rowid, * FROM " + _table);
+                var data = [];
+                for (var i = 0; i < rs.rows.length; i++) {
+                    model.id = rs.rows.item(i).rowid;
+                    model.date = rs.rows.item(i).date;
+                    model.name = rs.rows.item(i).name;
+                    model.desc = rs.rows.item(i).desc;
+                    data.push(model.copy());
+                    if (rs.rows.item(i).date === ddate) {
+                        console.log("CHECK: " + model.name)
+                        f = true
+                    }
+                }
+            });
+        return f
+    }
+//    function checkDate(d, m, y) {
+//        var ddate = Func.get_correct_date(d, m, y)
+//        var f = false
+//        db.transaction(function (tx) {
+//            var rs = tx.executeSql("SELECT rowid, * FROM " + _table);
+//            var data = [];
+//            for (var i = 0; i < rs.rows.length; i++) {
+//                model.id = rs.rows.item(i).rowid;
+//                model.date = rs.rows.item(i).date;
+//                model.name = rs.rows.item(i).name;
+//                model.desc = rs.rows.item(i).desc;
+//                if (rs.rows.item(i).date === ddate) {
+//                    console.log("CHECK: " + model.name)
+////                    f = true
+//                }
+//                data.push(model.copy());
+//            }
+//        })
+////        return f
+//    }
 
     PageHeader {
         id: pageHeader
@@ -161,7 +264,7 @@ Page {
 
                         Column {
                             Label {
-                                text: Func.get_month(datePicker.month) + " " + datePicker.year
+                                text: Func.get_month(datePicker.month+1) + " " + datePicker.year
                                 color: "white"
         //                        anchors.bottom: datePicker
                                 font.pixelSize: Theme.fontSizeExtraLargeBase
@@ -210,15 +313,31 @@ Page {
                                     onClicked: {
                                         datePicker.date = new Date(year, month-1, day, 12, 0, 0)
                                         var page = pageStack.push(Qt.resolvedUrl("DayPage.qml"))
+//                                        console.log()
                                         page.init(datePicker.year, datePicker.month, datePicker.day, datePicker.date.toString())
+//                                        page.init(datePicker.year.toString(), datePicker.month.toString(), datePicker.day.toString(), datePicker.date.toString())
     //                                    Func.func()
                                     }
                                     Label {
+                                        id: dd
                                         anchors.centerIn: parent
                                         text: day
                                         color: month === primaryMonth ? "#ff0000" : "#800000"
                 //                        font.bold: holiday
                                         font.pixelSize: !holiday? Theme.fontSizeMedium : Theme.fontSizeExtraSmall
+                                    }
+                                    Label {
+                                        id: mark
+                                        anchors.top: dd.bottom
+                                        anchors.horizontalCenter: parent.horizontalCenter
+                                        text: "*"
+                                        font.pixelSize: Theme.fontSizeExtraLarge
+                                        visible: false
+                                        Component.onCompleted: {
+                                            if (checkDate(String(day), String(month), String(year))) {
+                                                mark.visible = true
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -229,7 +348,7 @@ Page {
                             }
 
                             Label {
-                                text: Func.get_month(datePicker2.month) + " " + datePicker2.year
+                                text: Func.get_month(datePicker2.month+1) + " " + datePicker2.year
                                 color: "white"
         //                        anchors.bottom: datePicker
                                 font.pixelSize: Theme.fontSizeExtraLargeBase
@@ -283,11 +402,108 @@ Page {
     //                                    Func.func()
                                     }
                                     Label {
+                                        id: dd2
                                         anchors.centerIn: parent
                                         text: day
                                         color: month === primaryMonth ? "#ff0000" : "#800000"
                 //                        font.bold: holiday
                                         font.pixelSize: !holiday? Theme.fontSizeMedium : Theme.fontSizeExtraSmall
+                                    }
+                                    Label {
+                                        id: mark2
+                                        anchors.top: dd2.bottom
+                                        anchors.horizontalCenter: parent.horizontalCenter
+                                        text: "*"
+                                        font.pixelSize: Theme.fontSizeExtraLarge
+                                        visible: false
+                                        Component.onCompleted: {
+                                            if (checkDate(String(day), String(month), String(year))) {
+                                                mark2.visible = true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        Column {
+                            Component.onCompleted: {
+                                datePicker3.date = new Date(2024, 7, 1, 12, 0, 0)
+                            }
+
+                            Label {
+                                text: Func.get_month(datePicker3.month+1) + " " + datePicker3.year
+                                color: "white"
+        //                        anchors.bottom: datePicker
+                                font.pixelSize: Theme.fontSizeExtraLargeBase
+                                leftPadding: 20
+                            }
+
+                            DatePicker {
+                                id: datePicker3
+                //                ColorPickerPage: ""
+
+                                monthYearVisible: false
+                                daysVisible: false
+                                weeksVisible: false
+                                _weekColumnVisible: false
+
+                                function getModelData(dateObject, primaryMonth) {
+                                    var y = dateObject.getFullYear()
+                                    var m = dateObject.getMonth() + 1
+                                    var d = dateObject.getDate()
+                                    var data = {'year': y, 'month': m, 'day': d,
+                                                'primaryMonth': primaryMonth,
+                                                'holiday': (m === 1 && d === 1) || (m === 12 && (d === 25 || d === 26))}
+                                    return data
+                                }
+
+                                modelComponent: Component {
+                                    ListModel { }
+                                }
+
+                                onUpdateModel: {
+                                    var i = 0
+                                    var dateObject = new Date(fromDate)
+                                    while (dateObject < toDate) {
+                                        if (i < modelObject.count) {
+                                            modelObject.set(i, getModelData(dateObject, primaryMonth))
+                                        } else {
+                                            modelObject.append(getModelData(dateObject, primaryMonth))
+                                        }
+                                        dateObject.setDate(dateObject.getDate() + 1)
+                                        i++
+                                    }
+                                }
+                                delegate: MouseArea {
+                                    width: datePicker3.cellWidth
+                                    height: datePicker3.cellHeight
+
+                                    onClicked: {
+                                        datePicker3.date = new Date(year, month-1, day, 12, 0, 0)
+                                        var page = pageStack.push(Qt.resolvedUrl("DayPage.qml"))
+                                        page.init(datePicker3.year, datePicker3.month, datePicker3.day, datePicker3.date.toString())
+    //                                    Func.func()
+                                    }
+                                    Label {
+                                        id: dd3
+                                        anchors.centerIn: parent
+                                        text: day
+                                        color: month === primaryMonth ? "#ff0000" : "#800000"
+                //                        font.bold: holiday
+                                        font.pixelSize: !holiday? Theme.fontSizeMedium : Theme.fontSizeExtraSmall
+                                    }
+                                    Label {
+                                        id: mark3
+                                        anchors.top: dd3.bottom
+                                        anchors.horizontalCenter: parent.horizontalCenter
+                                        text: "*"
+                                        font.pixelSize: Theme.fontSizeExtraLarge
+                                        visible: false
+                                        Component.onCompleted: {
+                                            if (checkDate(String(day), String(month), String(year))) {
+                                                mark3.visible = true
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -297,5 +513,17 @@ Page {
             }
         }
     }
-
+    function initializeDatabase() {
+        var dbase = LocalStorage.openDatabaseSync("Tasks", "1.0", "Tasks
+                Database", 1000000)
+        dbase.transaction(function(tx) {
+            tx.executeSql("CREATE TABLE IF NOT EXISTS " + _table + "(date TEXT, name TEXT, desc TEXT)");
+            console.log("Table created!")
+        })
+        db = dbase
+    }
+    Component.onCompleted: {
+        initializeDatabase()
+        selectRows()
+    }
 }

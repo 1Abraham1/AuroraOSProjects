@@ -1,11 +1,50 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+//import "../pages/DBTaskPage.qml"
+import QtQuick.LocalStorage 2.0
 
 Page {
      id: page
      backgroundColor: "#141414"
      property string text_color: "#e30000"
      property string button_color: "#800000"
+     property var db
+
+     property string _table: "Tasks"
+//     DBTaskPage {
+//         id: main_db
+//     }
+     QtObject {
+         id: model
+         objectName: "TaskModel"
+
+         property int id: 0
+         property string date: ""
+         property string name: ""
+         property string desc: ""
+
+         function fromJson(json) {
+             try {
+                 id = json['id'] === undefined ? 0 : parseInt(json['id']);
+                 date = json['date'];
+                 name = json['name'];
+                 desc = json['desc'];
+             } catch (e) {
+                 return false;
+             }
+             return true;
+         }
+
+         function copy() {
+             return {
+                 "id": id,
+                 "date": date,
+                 "name": name,
+                 "desc": desc
+             };
+         }
+     }
+
 
      QtObject {
          id: current_day
@@ -46,12 +85,22 @@ Page {
                         anchors.verticalCenter: parent.verticalCenter
                     },
                     Text {
-                        objectName: "aboutButton"
-                        text: qsTr("Событие")
+                        text: qsTr("Задача")
                         color: "white"
                         font.pixelSize: Theme.fontSizeLargeBase
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.horizontalCenter: parent.horizontalCenter
+                    },
+                    Label {
+                        id: succes
+                        text: qsTr("Сохранено")
+
+                        color: "green"
+                        visible: false
+                        font.pixelSize: Theme.fontSizeLargeBase
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: parent.right
+
                     }
                 ]
             }
@@ -81,6 +130,7 @@ Page {
                     backgroundStyle: TextEditor.FilledBackground//NoBackground
 //                    background: back_textfield
                     placeholderColor: "#5c5c5c"
+                    acceptableInput: text.length === 10
 //                    label: qsTrId("Дата начала")
                     placeholderText: qsTrId("Дата начала")
                     EnterKey.iconSource: "image://theme/icon-m-enter-next"
@@ -88,11 +138,14 @@ Page {
 //                    Component.onCompleted: {
 //                        date.text = current_day.day + "." + current_day.month + "." + current_day.year
 //                    }
+                    onTextChanged: model.date = text
+
                 }
 
                 TextField {
                     id: name
                     focus: true
+                    acceptableInput: text.length > 0
                     backgroundStyle: TextEditor.FilledBackground
                     placeholderColor: "#5c5c5c"
                     label: qsTrId("Название")
@@ -102,6 +155,7 @@ Page {
 //                    leftItem: Icon {
 //                        source: "image://theme/icon-m-mail"
 //                    }
+                    onTextChanged: model.name = text
                 }
 
                 TextArea {
@@ -111,17 +165,34 @@ Page {
                     backgroundStyle: TextEditor.FilledBackground
                     placeholderColor: "#5c5c5c"
                     label: qsTrId("Описание")
+                    onTextChanged: model.desc = text
                 }
 
                 Button {
-                    id: calculateButton
+                    id: save
                     anchors.horizontalCenter: parent.horizontalCenter
 //                    anchors.top: circle.bottom
                     backgroundColor: button_color
                     color: "white"
                     text: "Сохранить"
-                    onClicked: onCalculateClicked()
+                    onClicked: {
+                        addRow()
+                        succes.visible = true
+                        desc.text = ""
+                        date.text = ""
+                        name.text = ""
+                    }
                 }
+//                Button {
+//                    id: show
+//                    anchors.horizontalCenter: parent.horizontalCenter
+////                    anchors.top: circle.bottom
+//                    backgroundColor: button_color
+//                    color: "white"
+//                    text: "Показать"
+//                    onClicked: selectRows()
+
+//                }
 
                 Label {
                     id: result1
@@ -139,77 +210,59 @@ Page {
                 }
             }
 
-            function onCalculateClicked(){
-                  var h=Number(height.text);
-                  var w=Number(weight.text);
-                  var c=Number(circle.text);
-                  if (isNullInField(height.text)||isNullInField(weight.text)||isNullInField(circle.text)){
-                      result1.text = "Заполните все поля!";
-                      result2.text = "";
-                      result3.text = "";
-                      return;
-                  }
-                  var gen,index,s;
-                  if (combo.currentIndex===0){
-                      gen=19;
-                  }else{
-                      gen=16;
-                  }
-                   h=h/100;
-                   index=w/(h*h);
-                   index=index*(gen/c);
-                   if(index<16)s="дефицит веса";
-                   else if(index>=16&&index<20)s="Недостаточный вес";
-                   else if(index>=20&&index<25)s="Норма";
-                   else if(index>=25&&index<30)s="Предожирение";
-                   else if(index>=30&&index<35)s="Первая степень ожирения";
-                   else if(index>=35&&index<40)s="Вторая степень ожирения";
-                   else s="Морбидное ожирение";
-
-                  result1.text = somatoType(gen,c) + "\nИМТ="+index.toFixed(2);
-                  result2.text = s
-                  if(s==="Норма"){
-                      result2.color = "green"
-                  }else{
-                      result2.color = "red"
-                  }
-                  result3.text = normalMassMin(c,h,gen) + "\n" + normalMassMax(c,h,gen);
-            }
-            function isNullInField(p){
-                    return p.length === 0;
-                }
-            function  normalMassMin(x,y,z){
-                  var im=x*(y*y)/z;
-                  return "Нижний предел нормального веса:\n"+20*im.toFixed(2)+" кг";
-              }
-            function normalMassMax(x,y,z){
-                var im=x*(y*y)/z;
-                return "Верхний предел нормального веса:\n"+25*im.toFixed(2)+" кг";
-            }
-            function  somatoType(a,b){
-                var s="";
-                var asthenic = "Тип телосложения: астенический.";
-                var normosthenic = "Тип телосложения: нормостенический";
-                var hypersthenic = "Тип телосложения: гиперстенический";
-                switch(a){
-                    case 19:
-                        if(b<18)s=asthenic;
-                        else if(b>=18&&b<=20)s=normosthenic;
-                        else s=hypersthenic;
-                        break;
-                    case 16:
-                        if(b<15)s=asthenic;
-                        else if(b>=15&&b<=17)s=normosthenic;
-                        else s=hypersthenic;
-                        break;
-                        default:
-                        break;
-                }
-                return s;
-            }
-        }
-
-        VerticalScrollDecorator {}
-
-        }
+         }
      }
+     function addRow() {
+         db.transaction(function (tx) {
+             tx.executeSql(
+                 "INSERT INTO " + _table + " VALUES(?, ?, ?)",
+                 [ model.date, model.name, model.desc]
+             )
+             console.log("INSERT: " + model.name)
+         })
+     }
+     function selectRows() {
+         db.transaction(function (tx) {
+                 var rs = tx.executeSql("SELECT rowid, * FROM " + _table);
+                 var data = [];
+                 for (var i = 0; i < rs.rows.length; i++) {
+                     model.id = rs.rows.item(i).rowid;
+                     model.date = rs.rows.item(i).date;
+                     model.name = rs.rows.item(i).name;
+                     model.desc = rs.rows.item(i).desc;
+                     data.push(model.copy());
+                     console.log("SELECT: " + model.name)
+                 }
+             });
+     }
+     function updateRow(data) {
+         db.transaction(function (tx) {
+                 if (model.fromJson(data)) {
+                     if (model.id === 0) {
+                         tx.executeSql(
+                             "INSERT INTO " + _table + " VALUES(?, ?, ?)",
+                             [ model.date, model.name, model.desc]
+                         );
+                     } else {
+                         tx.executeSql(
+                             "UPDATE " + _table + " SET date=?, name=?, desc=? WHERE rowid=?",
+                             [ model.date, model.name, model.desc, model.id]
+                         );
+                     }
+                     console.log("UPDATE: " + model.name)
+                 }
+             }
+         );
+         selectRows();
+     }
+     function initializeDatabase() {
+         var dbase = LocalStorage.openDatabaseSync("Tasks", "1.0", "Tasks
+                 Database", 1000000)
+         dbase.transaction(function(tx) {
+             tx.executeSql("CREATE TABLE IF NOT EXISTS " + _table + "(date TEXT, name TEXT, desc TEXT)");
+             console.log("Table created!")
+         })
+         db = dbase
+     }
+     Component.onCompleted: initializeDatabase()
+}

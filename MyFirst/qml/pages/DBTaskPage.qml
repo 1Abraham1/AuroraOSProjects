@@ -4,6 +4,36 @@ import QtQuick.LocalStorage 2.0
 
 Item {
     id: root
+    objectName: "DBTasks"
+    QtObject {
+        objectName: "TaskModel"
+
+        property int id: 0
+        property string date: ""
+        property string name: ""
+        property string desc: ""
+
+        function fromJson(json) {
+            try {
+                id = json['id'] === undefined ? 0 : parseInt(json['id']);
+                date = json['date'];
+                name = json['name'];
+                desc = json['desc'];
+            } catch (e) {
+                return false;
+            }
+            return true;
+        }
+
+        function copy() {
+            return {
+                "id": id,
+                "date": date,
+                "name": name,
+                "desc": desc
+            };
+        }
+    }
 
     property var db
     property string _table: "Tasks"
@@ -13,6 +43,15 @@ Item {
                 var rs = tx.executeSql("SELECT count(*) as cnt FROM " + _table + " WHERE date(substr(date,0,11)) = date('now') ");
                 result(rs.rows.item(0).cnt);
             });
+    }
+
+    function addRow(result) {
+        db.transaction(function (tx) {
+            tx.executeSql(
+                "INSERT INTO " + _table + " VALUES(?, ?, ?)",
+                [ model.date, model.name, model.desc]
+            );
+        });
     }
 
     function selectRows(result) {
@@ -58,16 +97,15 @@ Item {
         selectRows(result);
     }
 
-    Component.onCompleted: {
-        // Create table if not exist
-        db.transaction(function (tx) {
-                tx.executeSql("CREATE TABLE IF NOT EXISTS " + _table + "(date TEXT, name TEXT, desc TEXT)");
-            }
-        );
+    function initializeDatabase() {
+        var dbase = LocalStorage.openDatabaseSync("Tasks", "1.0", "Tasks
+                Database", 1000000)
+        dbase.transaction(function(tx) {
+            tx.executeSql("CREATE TABLE IF NOT EXISTS " + _table + "(date TEXT, name TEXT, desc TEXT)");
+            console.log("Table created!")
+        })
+        db = dbase
     }
-
-    Models.TaskModel {
-        id: model
-    }
+    Component.onCompleted: initializeDatabase()
 }
 

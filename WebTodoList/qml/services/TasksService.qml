@@ -7,6 +7,7 @@ import "../models" as Models
 
 Item {
     id: root
+    objectName: "DBTasks"
 
     property var db
     property string _table: "Tasks"

@@ -24,3 +24,25 @@ function get_correct_month(m) {
              "августа", "сентября", "октября", "ноября"]
     return months[m-1]
 }
+
+function get_correct_date(d, m, y) {
+    var dd, mm, yyyy
+    if (d in ["1", "2", "3", "4", "5", "6", "7", '8', "9"]) {
+        dd = "0" + d
+    } else {
+        dd = d
+    }
+    if (m in ["1", "2", "3", "4", "5", "6", "7", "8", "9"]) {
+        mm = "0" + m
+    } else {
+        mm = m
+    }
+    yyyy = y
+//    console.log("in js: " + dd + "." + mm + "." + yyyy)
+    return dd + "." + mm + "." + yyyy
+}
+
+function get_format_date(date) {
+    var s = date.split(".")
+    return s[0] + ' ' + get_correct_month(s[1]) + " " + s[2] + "г."
+}

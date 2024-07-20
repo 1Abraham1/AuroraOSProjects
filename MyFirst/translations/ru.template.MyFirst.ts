@@ -4,17 +4,17 @@
 <context>
     <name></name>
     <message id="Дата начала">
-        <location filename="../qml/pages/AddEventPage.qml" line="85"/>
+        <location filename="../qml/pages/AddEventPage.qml" line="135"/>
         <source></source>
         <translation type="unfinished"></translation>
     </message>
     <message id="Название">
-        <location filename="../qml/pages/AddEventPage.qml" line="98"/>
+        <location filename="../qml/pages/AddEventPage.qml" line="151"/>
         <source></source>
         <translation type="unfinished"></translation>
     </message>
     <message id="Описание">
-        <location filename="../qml/pages/AddEventPage.qml" line="113"/>
+        <location filename="../qml/pages/AddEventPage.qml" line="167"/>
         <source></source>
         <translation type="unfinished"></translation>
     </message>
@@ -45,30 +45,35 @@
 <context>
     <name>AddEventPage</name>
     <message>
-        <location filename="../qml/pages/AddEventPage.qml" line="44"/>
+        <location filename="../qml/pages/AddEventPage.qml" line="83"/>
         <source>назад</source>
         <translation type="unfinished">back</translation>
     </message>
     <message>
-        <location filename="../qml/pages/AddEventPage.qml" line="50"/>
-        <source>Событие</source>
+        <location filename="../qml/pages/AddEventPage.qml" line="88"/>
+        <source>Задача</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AddEventPage.qml" line="96"/>
+        <source>Сохранено</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>DayPage</name>
     <message>
-        <location filename="../qml/pages/DayPage.qml" line="27"/>
+        <location filename="../qml/pages/DayPage.qml" line="123"/>
         <source>г.</source>
         <translation>y.</translation>
     </message>
     <message>
-        <location filename="../qml/pages/DayPage.qml" line="50"/>
-        <source>Новое событие</source>
+        <location filename="../qml/pages/DayPage.qml" line="155"/>
+        <source>Новая задача</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/DayPage.qml" line="41"/>
+        <location filename="../qml/pages/DayPage.qml" line="146"/>
         <source>назад</source>
         <translation>back</translation>
     </message>
@@ -84,42 +89,42 @@
 <context>
     <name>MainPage</name>
     <message>
-        <location filename="../qml/pages/MainPage.qml" line="14"/>
+        <location filename="../qml/pages/MainPage.qml" line="117"/>
         <source>Template</source>
         <translation>Calendar</translation>
     </message>
     <message>
-        <location filename="../qml/pages/MainPage.qml" line="52"/>
+        <location filename="../qml/pages/MainPage.qml" line="155"/>
         <source>пн</source>
         <translation>mon</translation>
     </message>
     <message>
-        <location filename="../qml/pages/MainPage.qml" line="64"/>
+        <location filename="../qml/pages/MainPage.qml" line="167"/>
         <source>вт</source>
         <translation>tue</translation>
     </message>
     <message>
-        <location filename="../qml/pages/MainPage.qml" line="75"/>
+        <location filename="../qml/pages/MainPage.qml" line="178"/>
         <source>ср</source>
         <translation>wed</translation>
     </message>
     <message>
-        <location filename="../qml/pages/MainPage.qml" line="86"/>
+        <location filename="../qml/pages/MainPage.qml" line="189"/>
         <source>чт</source>
         <translation>thu</translation>
     </message>
     <message>
-        <location filename="../qml/pages/MainPage.qml" line="97"/>
+        <location filename="../qml/pages/MainPage.qml" line="200"/>
         <source>пт</source>
         <translation>fri</translation>
     </message>
     <message>
-        <location filename="../qml/pages/MainPage.qml" line="108"/>
+        <location filename="../qml/pages/MainPage.qml" line="211"/>
         <source>сб</source>
         <translation>sat</translation>
     </message>
     <message>
-        <location filename="../qml/pages/MainPage.qml" line="119"/>
+        <location filename="../qml/pages/MainPage.qml" line="222"/>
         <source>вс</source>
         <translation>sun</translation>
     </message>
